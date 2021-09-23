@@ -65,10 +65,7 @@ const main = async function() {
     const installationType = core.getInput('type');
     const pem = core.getInput('APP_PEM');
     const appID = core.getInput('APP_ID');
-    console.log(`Hello ${pem}!`);
-    console.log(`Hello ${appID}!`);
 
-    console.log(github.context.payload.repository.full_name);
     const repoInfo = github.context.payload.repository.full_name.split('/');
     const orgName = repoInfo[0]
     const userName = repoInfo[0]
@@ -83,13 +80,18 @@ const main = async function() {
     switch (installationType) {
       case 'org':
         installationID = await getInstallationIDByOrg(jwt, orgName);
+        break;
       case 'user':
         installationID = await getInstallationIDByUser(jwt, userName);
+        break;
       case 'repo':
         installationID = await getInstallationIDByRepo(jwt, userName, repoName);
+        break;
       default:
         core.setFailed(`invalid input type: ${installationType}`);
+        break;
     }
+    console.log(`installationID: ${installationID}`);
 
     const accessToken = await getAccessToken(jwt, installationID);
 
