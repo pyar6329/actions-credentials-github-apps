@@ -1,0 +1,19 @@
+name: 'Credentials GitHub Apps'
+description: 'Get a Git token using GitHub Apps credentials'
+inputs:
+  type:
+    description: GitHub Installation type. (user, repo, org)
+    required: true
+    default: org
+  APP_PEM:
+    description: a base64 encoded string version of your PEM file used to authenticate as a GitHub Apps.  You can apply this encoding in the terminal `cat key.pem | base64 -w 0`
+    required: true
+  APP_ID:
+    description: your GitHub Apps ID.
+    required: true
+outputs:
+  app_token:
+    description: The installation access token for the GitHub App corresponding to and the current repository.
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
