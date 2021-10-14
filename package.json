@@ -4,7 +4,7 @@
   "description": "Get a Git token using GitHub Apps credentials",
   "main": "index.js",
   "scripts": {
-    "build": "ncc build index.js",
+    "build": "ncc build -m index.js",
     "test": "jest --verbose ./tests"
   },
   "author": "Tsukasa Arima",
