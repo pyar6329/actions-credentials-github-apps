@@ -1,6 +1,9 @@
+const path = require("path");
+const fs = require('fs').promises;
 const jwt = require('jsonwebtoken');
 const core = require('@actions/core');
 const github = require('@actions/github');
+const exec = require('@actions/exec');
 
 const decodeBase64 = function(base64String) {
   const buf = Buffer.from(base64String, 'base64').toString();
@@ -59,12 +62,28 @@ const getAccessToken = async function(jwt, installationID) {
   return accessToken.token;
 }
 
+// save accessToken to ~/.git-credentials
+const saveAccessToken = async function(accessToken) {
+  await exec.exec('git config --global --add credential.helper store');
+  const homeDir = process.env["HOME"];
+  const credentialPath = path.join(homeDir, ".git-credentials")
+  await fs.writeFile(credentialPath, `https://x-access-token:${accessToken}@github.com\n`);
+}
+
+// config git protocol as https instead of ssh
+const setGitProtocolAsHTTPS = async function() {
+  await exec.exec('git config --global --add url."https://github.com/".insteadOf "ssh://git@github.com/"');
+  await exec.exec('git config --global --add url."https://github.com/".insteadOf "git@github.com:"');
+}
+
 // main function
 const main = async function() {
   try {
     const installationType = core.getInput('type');
     const pem = core.getInput('APP_PEM');
     const appID = core.getInput('APP_ID');
+    const needSavingAccessToken = core.getInput('save_app_token');
+    const useHTTPSInsteadOfSSH = core.getInput('use_HTTPS_instead_of_SSH');
 
     const repoInfo = github.context.payload.repository.full_name.split('/');
     const orgName = repoInfo[0]
@@ -95,6 +114,14 @@ const main = async function() {
 
     const accessToken = await getAccessToken(jwt, installationID);
 
+    if (needSavingAccessToken) {
+      await saveAccessToken(accessToken);
+    }
+
+    if (useHTTPSInsteadOfSSH) {
+      await setGitProtocolAsHTTPS();
+    }
+
     core.setOutput("app_token", accessToken);
   } catch (error) {
     core.setFailed(error.message);
@@ -110,5 +137,7 @@ module.exports = {
   getInstallationIDByRepo: getInstallationIDByRepo,
   getInstallationIDByUser: getInstallationIDByUser,
   getAccessToken: getAccessToken,
+  saveAccessToken: saveAccessToken,
+  setGitProtocolAsHTTPS: setGitProtocolAsHTTPS,
   main: main
 };

@@ -5,6 +5,14 @@ inputs:
     description: GitHub Installation type. (user, repo, org)
     required: true
     default: org
+  save_app_token:
+    description: Save GitHub access token to ~/.git-credentials
+    required: false
+    default: true
+  use_HTTPS_instead_of_SSH:
+    description: use Git protocol HTTPS instead of SSH
+    required: false
+    default: true
   APP_PEM:
     description: a base64 encoded string version of your PEM file used to authenticate as a GitHub Apps.  You can apply this encoding in the terminal `cat key.pem | base64 -w 0`
     required: true
