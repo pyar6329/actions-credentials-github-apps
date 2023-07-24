@@ -1,6 +1,6 @@
 {
   "name": "actions-credentials-github-apps",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Get a Git token using GitHub Apps credentials",
   "main": "index.js",
   "scripts": {
