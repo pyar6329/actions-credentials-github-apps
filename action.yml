@@ -8,11 +8,11 @@ inputs:
   save_app_token:
     description: Save GitHub access token to ~/.git-credentials
     required: false
-    default: true
+    default: 'true'
   use_HTTPS_instead_of_SSH:
     description: use Git protocol HTTPS instead of SSH
     required: false
-    default: true
+    default: 'true'
   APP_PEM:
     description: a base64 encoded string version of your PEM file used to authenticate as a GitHub Apps.  You can apply this encoding in the terminal `cat key.pem | base64 -w 0`
     required: true
@@ -23,5 +23,5 @@ outputs:
   app_token:
     description: The installation access token for the GitHub App corresponding to and the current repository.
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
